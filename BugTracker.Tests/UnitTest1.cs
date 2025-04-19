@@ -1,47 +1,46 @@
 ﻿namespace BugTracker.Tests
 {
     using BugTracker.Core;
-    public class TestStatus
+    public class BugTests
     {
         [Fact]
-        public void ConstructorTest()
+        public void Constructor_ValidInput_InitializesCorrectly()
         {
-            Bug bug = new Bug();
-            Assert.IsType<Bug>(bug);
-        }
-        [Fact]
-        public void UpdateStatusTestIsOpen()
-        {
-            Bug bug = new Bug();
-            bug.UpdateStatus(BugStatus.Open);
+            // Arrange & Act
+            var bug = new Bug(1, "Login fails", "Fails with correct credentials");
+
+            // Assert
+            Assert.Equal(1, bug.Id);
+            Assert.Equal("Login fails", bug.Title);
+            Assert.Equal("Fails with correct credentials", bug.Description);
             Assert.Equal(BugStatus.Open, bug.Status);
-
-
         }
-        [Fact]
-        public void UpdateStatusTestInProgress()
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public void Constructor_InvalidTitle_ThrowsArgumentException(string invalidTitle)
         {
-            Bug bug = new Bug();
-            bug.UpdateStatus(BugStatus.InProgress);
-            Assert.Equal(BugStatus.InProgress, bug.Status);
             
             
+             var ex = Assert.Throws<ArgumentException>(() => new Bug(1, invalidTitle, "desc"));
+             Assert.Equal("Title cannot be null, empty, or whitespace.", ex.Message);
         }
+
         [Fact]
-        public void UpdateStatusTestIsResolved()
+        public void UpdateStatus_ChangesStatus()
         {
-            Bug bug = new Bug();
+            // Arrange
+            var bug = new Bug(2, "Icon missing", "Settings icon not visible");
+
+            // Act
             bug.UpdateStatus(BugStatus.Resolved);
-            Assert.Equal(BugStatus.Resolved, bug.Status);
 
+            // Assert
+            Assert.Equal(BugStatus.Resolved, bug.Status);
         }
-        [Fact]
-        public void UpdateStatusTestIsClosed()
-        {
-            Bug bug = new Bug();
-            bug.UpdateStatus(BugStatus.Closed);
-            Assert.Equal(BugStatus.Closed, bug.Status);
-        }
-        
+
+
     }
 }
