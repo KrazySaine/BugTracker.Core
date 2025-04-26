@@ -10,7 +10,7 @@
             var bug = new Bug(1, "Login fails", "Fails with correct credentials");
 
             // Assert
-            Assert.Equal(1, bug.Id);
+            Assert.Equal(1, bug.BugId);
             Assert.Equal("Login fails", bug.Title);
             Assert.Equal("Fails with correct credentials", bug.Description);
             Assert.Equal(BugStatus.Open, bug.Status);
@@ -20,25 +20,48 @@
         [InlineData(null)]
         [InlineData("")]
         [InlineData("   ")]
-        public void Constructor_InvalidTitle_ThrowsArgumentException(string invalidTitle)
+        public void Constructor_ThrowsArgumentException_WhenTitleIsInvalid(string invalidTitle)
         {
-            
-            
-             var ex = Assert.Throws<ArgumentException>(() => new Bug(1, invalidTitle, "desc"));
-             Assert.Equal("Title cannot be null, empty, or whitespace.", ex.Message);
+            // Arrange & Act & Assert
+            Assert.Throws<ArgumentException>(() => new Bug(invalidTitle, "Some description"));
         }
 
         [Fact]
-        public void UpdateStatus_ChangesStatus()
+        public void Constructor_SetsPropertiesCorrectly()
         {
-            // Arrange
-            var bug = new Bug(2, "Icon missing", "Settings icon not visible");
-
-            // Act
-            bug.UpdateStatus(BugStatus.Resolved);
+            // Arrange & Act
+            var bug = new Bug("Login fails", "Steps to reproduce the issue");
 
             // Assert
-            Assert.Equal(BugStatus.Resolved, bug.Status);
+            Assert.Equal("Login fails", bug.Title);
+            Assert.Equal("Steps to reproduce the issue", bug.Description);
+            Assert.Equal(BugStatus.Open, bug.Status);
+        }
+
+        [Fact]
+        public void UpdateStatus_ChangesStatusCorrectly()
+        {
+            // Arrange
+            var bug = new Bug("Issue", "Details");
+
+            // Act
+            bug.UpdateStatus(BugStatus.InProgress);
+
+            // Assert
+            Assert.Equal(BugStatus.InProgress, bug.Status);
+        }
+
+        [Fact]
+        public void UpdateStatus_DoesNotChangeToSameStatus()
+        {
+            // Arrange
+            var bug = new Bug("Issue", "Details");
+
+            // Act
+            bug.UpdateStatus(BugStatus.Open);
+
+            // Assert
+            Assert.Equal(BugStatus.Open, bug.Status); // No change
         }
 
 

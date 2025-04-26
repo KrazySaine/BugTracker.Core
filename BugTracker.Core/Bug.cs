@@ -2,26 +2,36 @@
 {
     public class Bug
     {
-        public int Id { get; set; }
+        public int BugId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public BugStatus Status { get; set; }
-        public Bug(int id, string title, string description)
+
+        public Bug(int bugId, string title, string description)
         {
-            //TODO: Add guard clause for title
+            // Guard clause for title
             if (string.IsNullOrWhiteSpace(title))
             {
                 throw new ArgumentException("Title cannot be null, empty or whitespace.");
-                Id = id;
-                Title= title;
-                Description = description;
-                Status = BugStatus.Open;
             }
+
+            BugId = bugId;
+            Title = title;
+            Description = description;
+            Status = BugStatus.Open;
         }
+
         public void UpdateStatus(BugStatus newStatus)
         {
             Status = newStatus;
         }
 
+        
+        private BugStatus AssignedToDeveloper(int bugId, BugStatus status)
+        {
+            BugId = bugId;
+            Status = BugStatus.InProgress;
+            return Status;
+        }
     }
 }
